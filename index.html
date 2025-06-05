@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>TaskEarn Mini App</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- *********************************************** -->
+    <!-- ****** Telegram WebApp Script - IMPORTANT ****** -->
+    <!-- *********************************************** -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color, #f0f2f5);
+            color: var(--tg-theme-text-color, #000000);
+            padding-bottom: 70px;
+            overscroll-behavior-y: contain;
+        }
+        .container-fluid {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .header {
+            background-color: var(--tg-theme-secondary-bg-color, #ffffff);
+            padding: 15px;
+            border-bottom: 1px solid var(--tg-theme-hint-color, #e0e0e0);
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header h5 {
+            margin: 0;
+            font-weight: bold;
+        }
+        .balance-card {
+            background-color: var(--tg-theme-secondary-bg-color, #ffffff);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .balance-card h3 {
+            margin-top: 5px;
+            margin-bottom: 10px;
+            color: #28a745;
+        }
+        .balance-card .btn-sm {
+            margin-top: 5px;
+        }
+        #userInfoDebug { /* For displaying user ID and name */
+            font-size: 0.8em;
+            color: var(--tg-theme-hint-color, #6c757d);
+            margin-top: 5px;
+            word-break: break-all;
+        }
+
+        .task-card {
+            background-color: var(--tg-theme-secondary-bg-color, #ffffff);
+            border: 1px solid var(--tg-theme-hint-color, #e0e0e0);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+        .task-card .task-icon {
+            font-size: 24px;
+            margin-right: 15px;
+            width: 40px;
+            text-align: center;
+        }
+        .task-card .task-info {
+            flex-grow: 1;
+        }
+        .task-card .task-info h6 {
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+        .task-card .task-info p {
+            font-size: 0.9em;
+            color: var(--tg-theme-hint-color, #6c757d);
+            margin-bottom: 5px;
+        }
+        .task-card .task-reward {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .task-card .btn-complete-task {
+            white-space: nowrap;
+        }
+
+        .official-channels {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--tg-theme-secondary-bg-color, #ffffff);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .official-channels h6 {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .official-channels .list-group-item {
+            background-color: transparent;
+            border-color: var(--tg-theme-hint-color, #e0e0e0);
+            color: var(--tg-theme-link-color, #007bff);
+        }
+        .official-channels .list-group-item i {
+            margin-right: 8px;
+            color: #17a2b8;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--tg-theme-secondary-bg-color, #ffffff);
+            border-top: 1px solid var(--tg-theme-hint-color, #e0e0e0);
+            display: flex;
+            justify-content: space-around;
+            padding: 5px 0;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+        .bottom-nav .nav-item {
+            text-align: center;
+            color: var(--tg-theme-hint-color, #6c757d);
+            text-decoration: none;
+            padding: 5px 10px;
+            flex-grow: 1;
+        }
+        .bottom-nav .nav-item.active {
+            color: var(--tg-theme-link-color, #007bff);
+        }
+        .bottom-nav .nav-item i {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+        .bottom-nav .nav-item span {
+            font-size: 0.8em;
+        }
+
+        .app-section {
+            padding-top: 15px;
+            display: none;
+        }
+        .app-section.active {
+            display: block;
+        }
+
+        #referralPage .input-group .btn {
+            border-top-right-radius: .25rem;
+            border-bottom-right-radius: .25rem;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Darker overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none;
+        }
+        .loading-overlay .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--tg-theme-button-text-color, #ffffff); /* Spinner color based on theme */
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div class="header">
+        <h5 id="pageTitle">TaskEarn</h5>
+    </div>
+
+    <div class="container-fluid">
+        <!-- Home/Tasks Page -->
+        <div id="homePage" class="app-section active">
+            <div class="balance-card">
+                <p class="mb-1">Your Balance</p>
+                <h3 id="userBalance">$0.0000</h3>
+                <!-- Updated to show User ID and Name -->
+                <small id="userInfoDebug">User: Waiting for Telegram Data...</small>
+            </div>
+
+            <div class="mt-3">
+                <h6>Available Tasks</h6>
+                <div id="taskList">
+                    <p class="text-muted text-center mt-3">No tasks available right now. Check back later!</p>
+                </div>
+            </div>
+
+            <div class="official-channels">
+                <h6><i class="fas fa-bullhorn"></i> Official Channels</h6>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><a href="https://t.me/global_Fun22" target="_blank"><i class="fab fa-telegram-plane"></i> Channel 1: Global Fun</a></li>
+                    <li class="list-group-item"><a href="https://t.me/instant_earn_airdrop" target="_blank"><i class="fab fa-telegram-plane"></i> Channel 2: Instant Earn Airdrop</a></li>
+                    <li class="list-group-item"><a href="https://t.me/myearn_Cash_payment" target="_blank"><i class="fab fa-telegram-plane"></i> Channel 3: MyEarn Cash Payment</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Referrals Page -->
+        <div id="referralPage" class="app-section">
+            <div class="balance-card text-center p-4">
+                <h4><i class="fas fa-users"></i> Invite Friends, Earn More!</h4>
+                <p class="mt-2">Share your referral link and earn <strong class="text-success">0.01% commission</strong> on their earnings + <strong class="text-success">$0.005 USDT</strong> per successful referral.</p>
+                <div class="mt-3">
+                    <label for="referralLink" class="form-label">Your Referral Link:</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="referralLink" value="Generating..." readonly>
+                        <button class="btn btn-outline-secondary" type="button" id="copyReferralLinkBtn" onclick="copyReferralLink()"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <button class="btn btn-primary w-100" id="shareReferralLinkBtn" onclick="shareReferralLink()"><i class="fas fa-share-alt"></i> Share Now</button>
+                </div>
+                <div class="mt-4">
+                    <h5>Referral Stats</h5>
+                    <p>Total Referrals: <span id="totalReferrals">0</span></p>
+                    <p>Referral Earnings: <span id="referralEarnings">$0.0000</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Withdraw Page -->
+        <div id="withdrawPage" class="app-section">
+             <div class="balance-card p-4">
+                <h4><i class="fas fa-wallet"></i> Withdraw Funds</h4>
+                <p class="mt-2">Your current balance: <strong id="withdrawPageBalance">$0.0000</strong></p>
+                <form id="withdrawForm" class="mt-3">
+                    <div class="mb-3"><label for="withdrawAmount" class="form-label">Amount (USDT)</label><input type="number" class="form-control" id="withdrawAmount" placeholder="Min. $1.00" step="0.01" required></div>
+                    <div class="mb-3">
+                        <label for="paymentMethod" class="form-label">Payment Method</label>
+                        <select class="form-select" id="paymentMethod" required>
+                            <option value="">Select Method</option><option value="binance">Binance Pay (USDT)</option><option value="optimism">Optimism (USDT - ETH Network)</option><option value="bkash">bKash (BDT)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="accountInfoField" style="display: none;">
+                        <label for="accountDetails" class="form-label" id="accountDetailsLabel">Account Details</label>
+                        <input type="text" class="form-control" id="accountDetails" placeholder="" required>
+                        <small id="accountDetailsHint" class="form-text text-muted"></small>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100"><i class="fas fa-paper-plane"></i> Request Withdraw</button>
+                </form>
+                <div class="mt-3 text-center"><small class="text-muted">Withdrawals are processed within 24-48 hours.</small></div>
+            </div>
+        </div>
+
+        <!-- Profile/Settings Page (Placeholder) -->
+        <div id="profilePage" class="app-section">
+             <div class="balance-card p-4 text-center">
+                <h4><i class="fas fa-user-circle"></i> My Profile</h4>
+                <p class="mt-3">User ID: <strong id="profileUserId">N/A</strong></p>
+                <p>Username: <strong id="profileUserName">N/A</strong></p> <!-- Added for username -->
+                <p>Joined: <strong id="profileJoinDate">N/A</strong></p>
+                <p class="mt-3"><small>More profile settings coming soon!</small></p>
+                 <button class="btn btn-sm btn-danger mt-3" onclick="confirmResetData()">Reset Demo Data</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active" onclick="navigateTo('homePage', this)"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="#" class="nav-item" onclick="navigateTo('referralPage', this)"><i class="fas fa-users"></i><span>Refer</span></a>
+        <a href="#" class="nav-item" onclick="navigateTo('withdrawPage', this)"><i class="fas fa-wallet"></i><span>Withdraw</span></a>
+        <a href="#" class="nav-item" onclick="navigateTo('profilePage', this)"><i class="fas fa-user"></i><span>Profile</span></a>
+    </div>
+
+    <script>
+        // --- Global State and Variables ---
+        let currentUser = {
+            id: null,
+            username: 'guest',
+            firstName: '',
+            lastName: '',
+            balance: 0.00,
+            joinDate: new Date().toISOString().split('T')[0],
+            referrals: 0,
+            referralEarnings: 0,
+            completedTasks: [],
+            referredBy: null // To store referrer ID if any
+        };
+
+        // Sample tasks
+        let availableTasks = [
+            { id: 'fb_follow_1', type: 'fb_follower', title: 'Follow Our Facebook Page', description: 'Click and follow the page.', reward: 0.01, link: 'https://facebook.com/example', icon: 'fab fa-facebook-square', platformColor: '#3b5998' },
+            { id: 'yt_sub_1', type: 'yt_subscriber', title: 'Subscribe to YouTube Channel', description: 'Subscribe and turn on notifications.', reward: 0.015, link: 'https://youtube.com/example', icon: 'fab fa-youtube', platformColor: '#FF0000' },
+            { id: 'tg_join_1', type: 'tg_channel', title: 'Join Telegram Channel', description: 'Join our news channel.', reward: 0.005, link: 'https://t.me/example', icon: 'fab fa-telegram-plane', platformColor: '#0088cc' },
+            { id: 'website_visit_1', type: 'website_visit', title: 'Visit Partner Website', description: 'Stay on page for 30 seconds.', reward: 0.008, link: 'https://example.com', icon: 'fas fa-globe', platformColor: '#17a2b8' }
+        ];
+
+        const REFERRAL_BONUS_DIRECT = 0.005;
+        const REFERRAL_COMMISSION_RATE = 0.0001;
+
+        // --- UI Elements ---
+        const userBalanceEl = document.getElementById('userBalance');
+        const userInfoDebugEl = document.getElementById('userInfoDebug'); // For Home page user info
+        const taskListEl = document.getElementById('taskList');
+        const pageTitleEl = document.getElementById('pageTitle');
+        const referralLinkEl = document.getElementById('referralLink');
+        const totalReferralsEl = document.getElementById('totalReferrals');
+        const referralEarningsEl = document.getElementById('referralEarnings');
+        const withdrawPageBalanceEl = document.getElementById('withdrawPageBalance');
+        const paymentMethodSelect = document.getElementById('paymentMethod');
+        const accountInfoField = document.getElementById('accountInfoField');
+        const accountDetailsLabel = document.getElementById('accountDetailsLabel');
+        const accountDetailsInput = document.getElementById('accountDetails');
+        const accountDetailsHint = document.getElementById('accountDetailsHint');
+        const profileUserIdEl = document.getElementById('profileUserId');
+        const profileUserNameEl = document.getElementById('profileUserName'); // For Profile page username
+        const profileJoinDateEl = document.getElementById('profileJoinDate');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        // --- Core Functions ---
+        function initializeApp() {
+            console.log("Initializing App...");
+            showLoading(); // Show loading overlay at the very beginning
+
+            if (window.Telegram && window.Telegram.WebApp) {
+                const WebApp = window.Telegram.WebApp;
+                console.log("Telegram WebApp object found.");
+
+                WebApp.ready();
+                WebApp.expand();
+                
+                // Set background color based on Telegram theme
+                // document.body.style.backgroundColor = WebApp.themeParams.bg_color || '#f0f2f5';
+                // document.body.style.color = WebApp.themeParams.text_color || '#000000';
+
+
+                if (WebApp.initDataUnsafe && WebApp.initDataUnsafe.user) {
+                    const tgUser = WebApp.initDataUnsafe.user;
+                    currentUser.id = tgUser.id;
+                    currentUser.firstName = tgUser.first_name || "";
+                    currentUser.lastName = tgUser.last_name || "";
+                    currentUser.username = tgUser.username || "N/A";
+                    
+                    console.log("Telegram User Data:", tgUser);
+                    // WebApp.showAlert(`Welcome ${currentUser.firstName}! Your ID: ${currentUser.id}`);
+                } else {
+                    console.warn("Telegram user data (initDataUnsafe.user) not found.");
+                    // Fallback for local testing (if you want to test without Telegram)
+                    currentUser.id = 'local_test_' + Date.now();
+                    currentUser.firstName = 'Demo';
+                    currentUser.lastName = 'User';
+                    currentUser.username = 'demouser_local';
+                    console.log("Using fallback local user data:", currentUser);
+                    // alert("Running in local test mode. User data is mocked.");
+                }
+
+                // Check for referral from start_param
+                if (WebApp.initDataUnsafe && WebApp.initDataUnsafe.start_param) {
+                    const referrerId = WebApp.initDataUnsafe.start_param;
+                    console.log("Referred by (start_param):", referrerId);
+                    if (currentUser.id !== referrerId && !currentUser.referredBy) { // Don't allow self-referral or re-referral
+                         // This logic should ideally be on backend to prevent abuse
+                        currentUser.referredBy = referrerId;
+                        // Simulate giving bonus to new user for being referred (demo)
+                        currentUser.balance += REFERRAL_BONUS_DIRECT; 
+                        // WebApp.showAlert(`You were referred and got a bonus of $${REFERRAL_BONUS_DIRECT.toFixed(4)}!`);
+                        // In a real app, you'd also notify the backend to credit the referrer.
+                    }
+                }
+
+            } else {
+                console.error("Telegram WebApp script not loaded or not in Telegram environment.");
+                // Fallback for truly outside Telegram (e.g. plain browser)
+                currentUser.id = 'browser_user_' + Date.now();
+                currentUser.firstName = 'Browser';
+                currentUser.lastName = 'Test';
+                currentUser.username = 'browser_tester';
+                console.log("Using browser fallback user data:", currentUser);
+                // alert("App not running in Telegram. Some features might be limited. User data is mocked.");
+            }
+
+            loadUserData(); // Load any existing data from localStorage, merging with TG data
+            saveUserData(); // Save the potentially updated currentUser (with TG id or referral bonus)
+            
+            updateUI();
+            renderTasks();
+            navigateTo('homePage', document.querySelector('.bottom-nav .nav-item'));
+            hideLoading(); // Hide loading overlay after initialization
+            console.log("App Initialized. Current User:", JSON.parse(JSON.stringify(currentUser)));
+        }
+
+        function updateUI() {
+            console.log("Updating UI with balance:", currentUser.balance, "and ID:", currentUser.id);
+            userBalanceEl.textContent = `$${parseFloat(currentUser.balance).toFixed(4)}`;
+            
+            let userInfoText = `ID: ${currentUser.id}`;
+            if (currentUser.firstName) {
+                userInfoText = `${currentUser.firstName} ${currentUser.lastName} (@${currentUser.username}) | ID: ${currentUser.id}`;
+            } else if (currentUser.username && currentUser.username !== 'N/A') {
+                 userInfoText = `@${currentUser.username} | ID: ${currentUser.id}`;
+            }
+            userInfoDebugEl.textContent = userInfoText;
+
+
+            referralLinkEl.value = `https://t.me/YOUR_BOT_USERNAME_HERE?start=${currentUser.id}`; // !!! REPLACE YOUR_BOT_USERNAME_HERE !!!
+            totalReferralsEl.textContent = currentUser.referrals;
+            referralEarningsEl.textContent = `$${parseFloat(currentUser.referralEarnings).toFixed(4)}`;
+            withdrawPageBalanceEl.textContent = `$${parseFloat(currentUser.balance).toFixed(4)}`;
+            
+            profileUserIdEl.textContent = currentUser.id || "N/A";
+            profileUserNameEl.textContent = currentUser.username || "N/A"; // Display username on profile
+            profileJoinDateEl.textContent = currentUser.joinDate;
+        }
+
+        function renderTasks() {
+            taskListEl.innerHTML = '';
+            if (availableTasks.length === 0) {
+                taskListEl.innerHTML = '<p class="text-muted text-center mt-3">No tasks available right now.</p>';
+                return;
+            }
+            availableTasks.forEach(task => {
+                const isCompleted = currentUser.completedTasks.includes(task.id);
+                const taskCard = `
+                    <div class="task-card">
+                        <div class="task-icon" style="color: ${task.platformColor || 'var(--tg-theme-text-color)'};"><i class="${task.icon || 'fas fa-tasks'}"></i></div>
+                        <div class="task-info"><h6>${task.title}</h6><p>${task.description}</p></div>
+                        <div>
+                            <div class="task-reward mb-1">$${task.reward.toFixed(4)}</div>
+                            <button class="btn btn-sm ${isCompleted ? 'btn-secondary' : 'btn-primary'} btn-complete-task" 
+                                    onclick="${isCompleted ? '' : `confirmCompleteTask('${task.id}')`}" ${isCompleted ? 'disabled' : ''}>
+                                ${isCompleted ? '<i class="fas fa-check"></i> Done' : 'Do Task'}
+                            </button>
+                        </div>
+                    </div>`;
+                taskListEl.insertAdjacentHTML('beforeend', taskCard);
+            });
+        }
+        
+        function confirmCompleteTask(taskId) {
+            const task = availableTasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            if (window.Telegram && window.Telegram.WebApp) {
+                Telegram.WebApp.showConfirm(`You are about to perform the task: "${task.title}". This may open an external link. Continue?`, function(confirmed) {
+                    if (confirmed) {
+                        executeTask(taskId);
+                    }
+                });
+            } else {
+                // Fallback for non-Telegram environment
+                if (confirm(`Perform task: "${task.title}"? This may open: ${task.link}`)) {
+                    executeTask(taskId);
+                }
+            }
+        }
+
+        function executeTask(taskId) {
+            showLoading();
+            const task = availableTasks.find(t => t.id === taskId);
+            if (!task || currentUser.completedTasks.includes(taskId)) {
+                hideLoading(); return;
+            }
+
+            if (window.Telegram && window.Telegram.WebApp) {
+                Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+            }
+            
+            if (task.link) {
+                if (window.Telegram && window.Telegram.WebApp.openLink) {
+                    Telegram.WebApp.openLink(task.link, {try_instant_view: true});
+                } else {
+                    window.open(task.link, '_blank'); // Fallback for browser
+                }
+            }
+
+            // Simulate verification and reward
+            // In a real app, this should be confirmed by the user or via backend verification
+            setTimeout(() => {
+                currentUser.balance = parseFloat(currentUser.balance) + task.reward;
+                currentUser.completedTasks.push(taskId);
+                saveUserData(); updateUI(); renderTasks();
+                hideLoading();
+                if (window.Telegram && window.Telegram.WebApp) {
+                    Telegram.WebApp.showAlert(`Task "${task.title}" marked as attempted! You earned $${task.reward.toFixed(4)} (pending verification).`);
+                } else {
+                    alert(`Task "${task.title}" marked as attempted! You earned $${task.reward.toFixed(4)} (pending verification).`);
+                }
+            }, 2500); // Increased delay to simulate interaction
+        }
+
+
+        function navigateTo(pageId, navElement) {
+            document.querySelectorAll('.app-section').forEach(section => section.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(item => item.classList.remove('active'));
+            if (navElement) navElement.classList.add('active');
+            
+            const titles = {'homePage': 'TaskEarn - Home', 'referralPage': 'Refer & Earn', 'withdrawPage': 'Withdraw Funds', 'profilePage': 'My Profile'};
+            pageTitleEl.textContent = titles[pageId] || 'TaskEarn';
+            window.scrollTo(0, 0);
+        }
+
+        function copyReferralLink() {
+            navigator.clipboard.writeText(referralLinkEl.value).then(() => {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    Telegram.WebApp.HapticFeedback.impactOccurred('light');
+                    Telegram.WebApp.showAlert('Referral link copied!');
+                } else {
+                    alert('Referral link copied!');
+                }
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                if (window.Telegram && window.Telegram.WebApp) {
+                    Telegram.WebApp.showAlert('Failed to copy link.');
+                } else {
+                    alert('Failed to copy link.');
+                }
+            });
+        }
+
+        function shareReferralLink() {
+            const link = referralLinkEl.value;
+            const text = `Join TaskEarn and earn rewards! Use my referral link: ${link}`;
+            if (window.Telegram && window.Telegram.WebApp.openTelegramLink) {
+                Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
+            } else {
+                alert("Share this link: " + link);
+            }
+        }
+        
+        // --- Withdraw Logic ---
+        paymentMethodSelect.addEventListener('change', function() {
+            const method = this.value;
+            accountInfoField.style.display = 'none'; accountDetailsInput.value = '';
+            accountDetailsInput.placeholder = ''; accountDetailsHint.textContent = '';
+            if (method === 'binance') {
+                accountInfoField.style.display = 'block'; accountDetailsLabel.textContent = 'Binance Pay ID (Email/Phone/Pay ID)';
+                accountDetailsInput.placeholder = 'e.g., user@example.com or 123456789';
+            } else if (method === 'optimism') {
+                accountInfoField.style.display = 'block'; accountDetailsLabel.textContent = 'Optimism (ETH) Wallet Address';
+                accountDetailsInput.placeholder = 'e.g., 0x...'; accountDetailsHint.textContent = 'Ensure it is an Optimism network USDT (ETH) address.';
+            } else if (method === 'bkash') {
+                accountInfoField.style.display = 'block'; accountDetailsLabel.textContent = 'bKash Number (Personal)';
+                accountDetailsInput.placeholder = 'e.g., 01xxxxxxxxx';
+            }
+        });
+
+        document.getElementById('withdrawForm').addEventListener('submit', function(event) {
+            event.preventDefault(); showLoading();
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const method = paymentMethodSelect.value;
+            const accountDetails = accountDetailsInput.value;
+
+            let error = null;
+            if (isNaN(amount) || amount <= 0) error = 'Invalid amount.';
+            else if (amount > currentUser.balance) error = 'Insufficient balance.';
+            else if (!method) error = 'Please select a payment method.';
+            else if (accountInfoField.style.display !== 'none' && !accountDetails) error = 'Please provide account details.';
+            
+            if (error) {
+                hideLoading();
+                if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showAlert(error); else alert(error);
+                return;
+            }
+            
+            setTimeout(() => {
+                currentUser.balance = parseFloat(currentUser.balance) - amount;
+                saveUserData(); updateUI(); hideLoading();
+                const successMsg = `Withdrawal request of $${amount.toFixed(2)} via ${method} submitted. It will be processed soon.`;
+                if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showAlert(successMsg); else alert(successMsg);
+                document.getElementById('withdrawForm').reset();
+                accountInfoField.style.display = 'none';
+            }, 2000);
+        });
+        
+        // --- Local Storage for Demo ---
+        function saveUserData() {
+            try {
+                localStorage.setItem('taskEarnUserData_v1', JSON.stringify(currentUser));
+                console.log("User data saved to localStorage:", currentUser);
+            } catch (e) {
+                console.error("Error saving data to localStorage:", e);
+            }
+        }
+
+        function loadUserData() {
+            try {
+                const savedData = localStorage.getItem('taskEarnUserData_v1');
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    console.log("Loaded data from localStorage:", parsedData);
+                    // Merge with currentUser, prioritizing already set TG ID and names if present
+                    currentUser.id = currentUser.id || parsedData.id; // Keep TG ID if already set
+                    currentUser.username = currentUser.username !== 'guest' && currentUser.username !== 'N/A' ? currentUser.username : (parsedData.username || 'guest');
+                    currentUser.firstName = currentUser.firstName || parsedData.firstName || "";
+                    currentUser.lastName = currentUser.lastName || parsedData.lastName || "";
+                    
+                    currentUser.balance = parseFloat(parsedData.balance) || 0;
+                    currentUser.joinDate = parsedData.joinDate || new Date().toISOString().split('T')[0];
+                    currentUser.referrals = parseInt(parsedData.referrals) || 0;
+                    currentUser.referralEarnings = parseFloat(parsedData.referralEarnings) || 0;
+                    currentUser.completedTasks = Array.isArray(parsedData.completedTasks) ? parsedData.completedTasks : [];
+                    currentUser.referredBy = parsedData.referredBy || null;
+                }
+            } catch (e) {
+                console.error("Error loading data from localStorage:", e);
+            }
+        }
+        
+        function confirmResetData() {
+            const msg = "Are you sure you want to reset all demo data? This cannot be undone.";
+            const callback = function(confirmed) {
+                if (confirmed) {
+                    localStorage.removeItem('taskEarnUserData_v1');
+                    currentUser = { // Reset to initial state
+                        id: null, username: 'guest', firstName: '', lastName: '', balance: 0.00, 
+                        joinDate: new Date().toISOString().split('T')[0], referrals: 0, referralEarnings: 0, 
+                        completedTasks: [], referredBy: null
+                    };
+                    // Re-initialize with default/Telegram data
+                    initializeApp();
+                    if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showAlert("Demo data has been reset."); else alert("Demo data has been reset.");
+                }
+            };
+            if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showConfirm(msg, callback); else if(confirm(msg)) callback(true);
+        }
+
+        // --- Utility Functions ---
+        function showLoading() { loadingOverlay.style.display = 'flex'; }
+        function hideLoading() { loadingOverlay.style.display = 'none'; }
+        
+        // --- Initialize the App ---
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
