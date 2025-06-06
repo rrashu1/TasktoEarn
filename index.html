@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>TaskEarn Mini App (Updated & Fixed)</title>
+    <title>TaskEarn Mini App (Referral System Fixed)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -43,18 +43,15 @@
     <div class="header"><h5 id="pageTitle">TaskEarn</h5></div>
 
     <div class="container-fluid">
-        <!-- Home Page (HTML is the same, but JS logic is fixed) -->
+        <!-- Home Page -->
         <div id="homePage" class="app-section active">
              <div class="balance-card"><p class="mb-1">Your Balance</p><h3 id="userBalance">$0.0000</h3><small id="userInfoDebug">User: Initializing...</small></div>
             <div class="mt-3"><h6>Available Tasks</h6><div id="taskList"><p class="text-muted text-center mt-3">Loading tasks...</p></div></div>
             <div class="official-channels"><h6><i class="fas fa-bullhorn"></i> Official Channels</h6><ul class="list-group list-group-flush"><li class="list-group-item"><a href="https://t.me/global_Fun22" target="_blank"><i class="fab fa-telegram-plane"></i> Global Fun</a></li><li class="list-group-item"><a href="https://t.me/instant_earn_airdrop" target="_blank"><i class="fab fa-telegram-plane"></i> Instant Earn Airdrop</a></li><li class="list-group-item"><a href="https://t.me/myearn_Cash_payment" target="_blank"><i class="fab fa-telegram-plane"></i> MyEarn Cash Payment</a></li></ul></div>
-            <div class="official-channels mt-3">
-                <h6><i class="fas fa-bullhorn"></i> Post Your Task</h6><p class="text-center text-muted small mb-2">Want to promote your channel, bot or website? Contact us.</p>
-                <ul class="list-group list-group-flush"><li class="list-group-item"><a href="mailto:rasedulhaque675@gmail.com" target="_blank"><i class="fas fa-envelope" style="color: #D44638;"></i> Contact via Gmail</a></li><li class="list-group-item"><a href="https://www.facebook.com/Rashuxansi" target="_blank"><i class="fab fa-facebook" style="color: #1877F2;"></i> Contact on Facebook</a></li></ul>
-            </div>
+            <div class="official-channels mt-3"><h6><i class="fas fa-bullhorn"></i> Post Your Task</h6><p class="text-center text-muted small mb-2">Want to promote your channel, bot or website? Contact us.</p><ul class="list-group list-group-flush"><li class="list-group-item"><a href="mailto:rasedulhaque675@gmail.com" target="_blank"><i class="fas fa-envelope" style="color: #D44638;"></i> Contact via Gmail</a></li><li class="list-group-item"><a href="https://www.facebook.com/Rashuxansi" target="_blank"><i class="fab fa-facebook" style="color: #1877F2;"></i> Contact on Facebook</a></li></ul></div>
         </div>
         
-        <!-- Other Pages (Referral, Withdraw, Profile) are unchanged -->
+        <!-- Other Pages (Referral, Withdraw, Profile) -->
         <div id="referralPage" class="app-section">
             <div class="balance-card text-center p-4"><h4><i class="fas fa-users"></i> Invite Friends, Earn More!</h4><p class="mt-2">Share referral link: earn <strong class="text-success">0.01% commission</strong> on referred user's task earnings + <strong class="text-success">$0.005 USDT</strong> per successful referral.</p><div class="mt-3"><label for="referralLink" class="form-label">Your Referral Link:</label><div class="input-group mb-3"><input type="text" class="form-control" id="referralLink" value="Generating..." readonly><button class="btn btn-outline-secondary" type="button" id="copyReferralLinkBtn"><i class="fas fa-copy"></i></button></div><button class="btn btn-primary w-100" id="shareReferralLinkBtn"><i class="fas fa-share-alt"></i> Share Now</button></div><div class="mt-4"><h5>Referral Stats</h5><p>Total Referrals: <span id="totalReferrals">0</span></p><p>My Referral Bonus: <span id="referralEarnings">$0.0000</span> (from direct referrals)</p><p><small>Commission from referred users' tasks will be added by the system.</small></p></div></div>
         </div>
@@ -86,12 +83,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
         import { getFirestore, collection, doc, getDoc, setDoc, getDocs, query, where, serverTimestamp, deleteDoc, addDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAxE1P_V4-OhtGZYZzEfBuNMvePRw_Pwkg",
             authDomain: "tasktoearn-57d8d.firebaseapp.com",
@@ -103,12 +98,10 @@
             measurementId: "G-P3ZSKWQRD5"
         };
         
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const analytics = getAnalytics(app);
-        console.log("Firebase (User App - Fixed Version) Initialized with Analytics!");
-
+        
         const BOT_USERNAME = 'Task_Toearnn_Bot';
         let currentUser = { id: null, username: 'guest', firstName: '', lastName: '', age: null, balance: 0.00, joinDate: new Date().toISOString().split('T')[0], referrals: 0, referralEarnings: 0, completedTasks: [], referredBy: null };
         let availableTasks = [];
@@ -126,18 +119,13 @@
             try {
                 if (window.Telegram && window.Telegram.WebApp) {
                     const WebApp = window.Telegram.WebApp;
-                    WebApp.ready();
-                    WebApp.expand();
+                    WebApp.ready(); WebApp.expand();
                     if (WebApp.initDataUnsafe && WebApp.initDataUnsafe.user) {
                         const tgUser = WebApp.initDataUnsafe.user;
                         currentUser.id = tgUser.id.toString();
                         currentUser.firstName = tgUser.first_name || "";
                         currentUser.lastName = tgUser.last_name || "";
                         currentUser.username = tgUser.username || "N/A";
-                    } else {
-                        currentUser.id = 'local_' + Date.now();
-                        currentUser.username = 'demouser';
-                        currentUser.firstName = 'Demo';
                     }
                     if (WebApp.initDataUnsafe && WebApp.initDataUnsafe.start_param) {
                         const refId = WebApp.initDataUnsafe.start_param;
@@ -145,90 +133,77 @@
                             currentUser.referredBy = refId;
                         }
                     }
-                } else {
-                    currentUser.id = 'browser_' + Date.now();
-                    currentUser.username = 'browseruser';
-                    currentUser.firstName = 'Browser';
-                }
+                } else { currentUser.id = 'browser_' + Date.now(); currentUser.username = 'browseruser'; currentUser.firstName = 'Browser'; }
                 await loadUserDataFromFirestore();
                 await loadTasksFromFirestore();
                 updateUI();
                 navigateTo('homePage');
-            } catch (error) {
-                console.error("Error during app initialization:", error);
-                alert("Failed to initialize app.");
-            } finally {
-                hideLoading();
-            }
+            } catch (error) { console.error("Error during app initialization:", error); alert("Failed to initialize app."); } 
+            finally { hideLoading(); }
         }
 
-        // !!! রেফারেল কাউন্ট করার জন্য নতুন ফাংশন !!!
-        async function processReferral(referrerId) {
+        // ✅ রেফারারের একাউন্টে বোনাস এবং কাউন্ট যোগ করার আপডেটেড ফাংশন
+        async function processReferral(referrerId, bonusAmount) {
             if (!referrerId) return;
             const referrerDocRef = doc(db, "users", referrerId);
             try {
-                // Use increment to safely update the count on the server
+                // Safely update the referrer's count and earnings on the server
                 await updateDoc(referrerDocRef, {
-                    referrals: increment(1)
+                    referrals: increment(1),
+                    balance: increment(bonusAmount),
+                    referralEarnings: increment(bonusAmount)
                 });
-                console.log(`Successfully incremented referral count for user ${referrerId}`);
+                console.log(`Successfully credited referral bonus and count for user ${referrerId}`);
             } catch (error) {
                 console.error("Error updating referrer's data:", error);
             }
         }
 
+        // ✅ নতুন ব্যবহারকারী শনাক্ত এবং রেফারেল প্রক্রিয়া শুরু করার আপডেটেড লজিক
         async function loadUserDataFromFirestore() {
             if (!currentUser.id) return;
             const userDocRef = doc(db, "users", currentUser.id);
             try {
                 const docSnap = await getDoc(userDocRef);
                 if (docSnap.exists()) {
-                    // Existing user
+                    // Existing user - just load their data
                     const data = docSnap.data();
-                    currentUser.firstName = currentUser.firstName || data.firstName || "";
-                    currentUser.lastName = currentUser.lastName || data.lastName || "";
-                    currentUser.username = currentUser.username !== 'guest' && currentUser.username !== 'N/A' ? currentUser.username : (data.username || 'guest');
-                    currentUser.age = data.age || null;
+                    Object.assign(currentUser, data);
                     currentUser.balance = parseFloat(data.balance) || 0;
-                    currentUser.joinDate = data.joinDate || currentUser.joinDate;
                     currentUser.referrals = parseInt(data.referrals) || 0;
                     currentUser.referralEarnings = parseFloat(data.referralEarnings) || 0;
                     currentUser.completedTasks = Array.isArray(data.completedTasks) ? data.completedTasks : [];
-                    // Ensure referredBy is not overwritten if it already exists
-                    currentUser.referredBy = data.referredBy || currentUser.referredBy;
                 } else {
-                    // New user
+                    // This is a NEW user
                     let isNewUserBonusApplied = false;
                     if (currentUser.referredBy) {
-                        // Apply bonus to the new user
+                        // 1. Give bonus to the new user
                         currentUser.balance += REFERRAL_BONUS_DIRECT;
-                        currentUser.referralEarnings += REFERRAL_BONUS_DIRECT;
                         isNewUserBonusApplied = true;
                         
-                        // !!! রেফারেলের কাউন্ট বাড়ানোর জন্য এই ফাংশনটি কল করা হচ্ছে !!!
-                        await processReferral(currentUser.referredBy);
+                        // 2. এখানে রেফারারকে বোনাস এবং কাউন্ট দেওয়া হচ্ছে
+                        await processReferral(currentUser.referredBy, REFERRAL_BONUS_DIRECT);
                     }
-                    // Save new user data
+                    
+                    // 3. Save the new user's data for the first time
                     await saveUserDataToFirestore();
+                    
                     if (isNewUserBonusApplied && window.Telegram && window.Telegram.WebApp) {
                         Telegram.WebApp.showAlert(`Welcome! You received a $${REFERRAL_BONUS_DIRECT.toFixed(3)} bonus for joining via a referral!`);
                     }
                 }
-            } catch (e) {
-                console.error("Error loading user data: ", e);
-            }
+            } catch (e) { console.error("Error loading user data: ", e); }
         }
 
-        async function saveUserDataToFirestore() { if (!currentUser.id) return; const userDocRef = doc(db, "users", currentUser.id); const dataToSave = { id: currentUser.id, username: currentUser.username, firstName: currentUser.firstName, lastName: currentUser.lastName, age: currentUser.age || null, balance: parseFloat(currentUser.balance) || 0, joinDate: currentUser.joinDate, referrals: parseInt(currentUser.referrals) || 0, referralEarnings: parseFloat(currentUser.referralEarnings) || 0, completedTasks: currentUser.completedTasks || [], referredBy: currentUser.referredBy || null, lastSeen: serverTimestamp() }; try { await setDoc(userDocRef, dataToSave, { merge: true }); } catch (e) { console.error("Error saving user data: ", e); } }
+        async function saveUserDataToFirestore() { if (!currentUser.id) return; const userDocRef = doc(db, "users", currentUser.id); const dataToSave = { id: currentUser.id, username: currentUser.username, firstName: currentUser.firstName, lastName: currentUser.lastName, age: currentUser.age || null, balance: parseFloat(currentUser.balance) || 0, joinDate: currentUser.joinDate || new Date().toISOString().split('T')[0], referrals: parseInt(currentUser.referrals) || 0, referralEarnings: parseFloat(currentUser.referralEarnings) || 0, completedTasks: currentUser.completedTasks || [], referredBy: currentUser.referredBy || null, lastSeen: serverTimestamp() }; try { await setDoc(userDocRef, dataToSave, { merge: true }); } catch (e) { console.error("Error saving user data: ", e); } }
         async function loadTasksFromFirestore() { const tasksCollRef = collection(db, "tasks"); const q = query(tasksCollRef, where("isActive", "==", true)); try { const querySnapshot = await getDocs(q); availableTasks = []; querySnapshot.forEach((docSnap) => availableTasks.push({ id: docSnap.id, ...docSnap.data() })); } catch (e) { console.error("Error loading tasks: ", e); } finally { renderTasks(); } }
         
         function updateUI() {
             ui.userBalance.textContent = `$${parseFloat(currentUser.balance).toFixed(4)}`;
             let userInfo = `ID: ${currentUser.id || 'N/A'}`;
             if (currentUser.firstName) userInfo = `${currentUser.firstName} ${currentUser.lastName || ''} (@${currentUser.username || 'N/A'}) | ID: ${currentUser.id}`;
-            else if (currentUser.username && currentUser.username !== 'guest' && currentUser.username !== 'N/A') userInfo = `@${currentUser.username} | ID: ${currentUser.id}`;
+            else if (currentUser.username && currentUser.username !== 'guest') userInfo = `@${currentUser.username} | ID: ${currentUser.id}`;
             ui.userInfoDebug.textContent = userInfo;
-            // !!! বটের ইউজারনেম ব্যবহার করে লিঙ্ক তৈরি হচ্ছে !!!
             ui.referralLink.value = `https://t.me/${BOT_USERNAME}?start=${currentUser.id}`;
             ui.totalReferrals.textContent = currentUser.referrals || 0;
             ui.referralEarnings.textContent = `$${parseFloat(currentUser.referralEarnings || 0).toFixed(4)}`;
@@ -238,59 +213,42 @@
             ui.profileFirstNameInput.value = currentUser.firstName || "";
             ui.profileLastNameInput.value = currentUser.lastName || "";
             ui.profileAgeInput.value = currentUser.age || "";
-            ui.profileTasksCompleted.textContent = currentUser.completedTasks.length || 0;
+            ui.profileTasksCompleted.textContent = currentUser.completedTasks ? currentUser.completedTasks.length : 0;
             ui.profileJoinDate.textContent = currentUser.joinDate ? new Date(currentUser.joinDate).toLocaleDateString() : "N/A";
         }
 
-        function renderTasks() { ui.taskList.innerHTML = ''; if (availableTasks.length === 0) { ui.taskList.innerHTML = '<p class="text-muted text-center mt-3">No tasks available.</p>'; return; } availableTasks.forEach(task => { const isCompleted = currentUser.completedTasks.includes(task.id); const rewardText = task.reward ? `$${parseFloat(task.reward).toFixed(4)}` : 'N/A'; const taskCard = `<div class="task-card"><div class="task-icon" style="color: ${task.platformColor || '#777'};"><i class="${task.icon || 'fas fa-tasks'}"></i></div><div class="task-info"><h6>${task.title || 'Untitled Task'}</h6><p>${task.description || 'No description.'}</p></div><div><div class="task-reward mb-1">${rewardText}</div><button class="btn btn-sm ${isCompleted ? 'btn-secondary' : 'btn-primary'} btn-complete-task" data-taskid="${task.id}" ${isCompleted ? 'disabled' : ''}>${isCompleted ? '<i class="fas fa-check"></i> Done' : 'Do Task'}</button></div></div>`; ui.taskList.insertAdjacentHTML('beforeend', taskCard); }); }
+        function renderTasks() { ui.taskList.innerHTML = ''; if (availableTasks.length === 0) { ui.taskList.innerHTML = '<p class="text-muted text-center mt-3">No tasks available.</p>'; return; } availableTasks.forEach(task => { const isCompleted = currentUser.completedTasks && currentUser.completedTasks.includes(task.id); const rewardText = task.reward ? `$${parseFloat(task.reward).toFixed(4)}` : 'N/A'; const taskCard = `<div class="task-card"><div class="task-icon" style="color: ${task.platformColor || '#777'};"><i class="${task.icon || 'fas fa-tasks'}"></i></div><div class="task-info"><h6>${task.title || 'Untitled Task'}</h6><p>${task.description || 'No description.'}</p></div><div><div class="task-reward mb-1">${rewardText}</div><button class="btn btn-sm ${isCompleted ? 'btn-secondary' : 'btn-primary'} btn-complete-task" data-taskid="${task.id}" ${isCompleted ? 'disabled' : ''}>${isCompleted ? '<i class="fas fa-check"></i> Done' : 'Do Task'}</button></div></div>`; ui.taskList.insertAdjacentHTML('beforeend', taskCard); }); }
         function generateCaptcha() { const chars = 'AbcDefGhijKLMnPQRsTUVwXYz0123456789'; let captcha = ''; for (let i = 0; i < 6; i++) { captcha += chars.charAt(Math.floor(Math.random() * chars.length)); } return captcha; }
         function showCaptchaVerification(taskId) { currentTaskIdForCaptcha = taskId; currentCaptcha = generateCaptcha(); ui.captchaText.textContent = currentCaptcha; ui.captchaInput.value = ''; ui.captchaError.style.display = 'none'; if (!ui.captchaModal) { ui.captchaModal = new bootstrap.Modal(document.getElementById('captchaModal')); } ui.captchaModal.show(); }
 
-        // !!! টাস্ক করার ফ্লো এবং টাইমার সম্পূর্ণ সমাধান করা হয়েছে !!!
+        // ✅ টাস্ক করার ফ্লো এবং টাইমার সম্পূর্ণ সমাধান করা হয়েছে
         function startTask(button) {
             const taskId = button.dataset.taskid;
             const task = availableTasks.find(t => t.id === taskId);
             if (!task) return;
-
             let message = `You are about to perform the task: "${task.title}".\n\n`;
-            if (task.duration && task.duration > 0) {
-                 message += `You must wait for ${task.duration} seconds after the page loads to claim your reward.`;
-            } else {
-                 message += `After you finish, return here to verify and claim your reward.`;
-            }
-           
+            if (task.duration && task.duration > 0) { message += `You must wait for ${task.duration} seconds after the page loads to claim your reward.`; } 
+            else { message += `After you finish, return here to verify and claim your reward.`; }
             const callback = (confirmed) => {
                 if (confirmed) {
-                    if (task.link) {
-                        if (window.Telegram && window.Telegram.WebApp.openLink) Telegram.WebApp.openLink(task.link);
-                        else window.open(task.link, '_blank');
-                    }
-                    
+                    if (task.link) { if (window.Telegram && window.Telegram.WebApp.openLink) Telegram.WebApp.openLink(task.link); else window.open(task.link, '_blank'); }
                     if (task.duration && task.duration > 0) {
                         button.disabled = true;
                         let remainingTime = task.duration;
                         button.innerHTML = `<i class="fas fa-hourglass-half"></i> Wait (${remainingTime}s)`;
-                        
                         const intervalId = setInterval(() => {
                             remainingTime--;
-                            if (remainingTime > 0) {
-                                button.innerHTML = `<i class="fas fa-hourglass-half"></i> Wait (${remainingTime}s)`;
-                            } else {
-                                clearInterval(intervalId);
-                                showCaptchaVerification(taskId);
-                            }
+                            if (remainingTime > 0) { button.innerHTML = `<i class="fas fa-hourglass-half"></i> Wait (${remainingTime}s)`; } 
+                            else { clearInterval(intervalId); showCaptchaVerification(taskId); }
                         }, 1000);
-                    } else {
-                        setTimeout(() => showCaptchaVerification(taskId), 2000); // 2-second delay if no timer
-                    }
+                    } else { setTimeout(() => showCaptchaVerification(taskId), 2500); }
                 }
             };
-            
             if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showConfirm(message, callback);
             else if (confirm(message)) callback(true);
         }
 
-        async function executeTaskCompletion(taskId) { showLoading(); const task = availableTasks.find(t => t.id === taskId); if (!task || currentUser.completedTasks.includes(taskId) || !task.reward) { hideLoading(); return; } if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.HapticFeedback.impactOccurred('medium'); currentUser.balance = (parseFloat(currentUser.balance) || 0) + (parseFloat(task.reward) || 0); currentUser.completedTasks.push(taskId); await saveUserDataToFirestore(); updateUI(); renderTasks(); hideLoading(); const rewardAmount = parseFloat(task.reward).toFixed(4); const successMessage = `Task verified & completed! +$${rewardAmount}`; if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showAlert(successMessage); else alert(successMessage); }
+        async function executeTaskCompletion(taskId) { showLoading(); const task = availableTasks.find(t => t.id === taskId); if (!task || (currentUser.completedTasks && currentUser.completedTasks.includes(taskId)) || !task.reward) { hideLoading(); return; } if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.HapticFeedback.impactOccurred('medium'); currentUser.balance = (parseFloat(currentUser.balance) || 0) + (parseFloat(task.reward) || 0); if (!currentUser.completedTasks) { currentUser.completedTasks = []; } currentUser.completedTasks.push(taskId); await saveUserDataToFirestore(); updateUI(); renderTasks(); hideLoading(); const rewardAmount = parseFloat(task.reward).toFixed(4); const successMessage = `Task verified & completed! +$${rewardAmount}`; if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showAlert(successMessage); else alert(successMessage); }
         
         // Other functions are unchanged
         function copyReferralLink() { navigator.clipboard.writeText(ui.referralLink.value).then(() => { const msg = 'Referral link copied!'; if (window.Telegram && window.Telegram.WebApp) { Telegram.WebApp.HapticFeedback.impactOccurred('light'); Telegram.WebApp.showAlert(msg); } else { alert(msg); } }).catch(e => { console.error('Copy failed:', e); alert('Failed to copy.'); }); }
@@ -302,7 +260,6 @@
         
         // Event Listeners
         ui.submitCaptchaBtn.addEventListener('click', async function() { const userInput = ui.captchaInput.value.trim(); if (userInput.toLowerCase() === currentCaptcha.toLowerCase()) { ui.captchaModal.hide(); await executeTaskCompletion(currentTaskIdForCaptcha); } else { ui.captchaError.style.display = 'block'; if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.HapticFeedback.notificationOccurred('error'); currentCaptcha = generateCaptcha(); ui.captchaText.textContent = currentCaptcha; ui.captchaInput.value = ''; } });
-        // !!! আপডেটেড ইভেন্ট লিসেনার, যা startTask ফাংশনকে কল করে !!!
         document.addEventListener('click', function(event) { if (event.target.matches('.btn-complete-task')) { startTask(event.target); } });
         ui.copyReferralLinkBtn.addEventListener('click', copyReferralLink);
         ui.shareReferralLinkBtn.addEventListener('click', shareReferralLink);
