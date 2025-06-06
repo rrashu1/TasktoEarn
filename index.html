@@ -24,6 +24,7 @@
         .official-channels { margin-top: 20px; padding: 15px; background-color: var(--tg-theme-secondary-bg-color, #fff); border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .official-channels h6 { margin-bottom: 10px; text-align: center; }
         .official-channels .list-group-item { background-color: transparent; border-color: var(--tg-theme-hint-color, #e0e0e0); color: var(--tg-theme-link-color, #007bff); }
+        .official-channels .list-group-item a { text-decoration: none; color: inherit; }
         .official-channels .list-group-item i { margin-right: 8px; color: #17a2b8; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--tg-theme-secondary-bg-color, #fff); border-top: 1px solid var(--tg-theme-hint-color, #e0e0e0); display: flex; justify-content: space-around; padding: 5px 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); z-index: 1020; }
         .bottom-nav .nav-item { text-align: center; color: var(--tg-theme-hint-color, #6c757d); text-decoration: none; padding: 5px 10px; flex-grow: 1; cursor: pointer; }
@@ -34,6 +35,7 @@
         .app-section.active { display: block; }
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 9999; display: none; }
         .loading-overlay .spinner-border { width: 3rem; height: 3rem; color: #fff; }
+        .captcha-display { background-color: #eee; color: #333; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-family: 'Courier New', monospace; font-size: 1.5rem; letter-spacing: 5px; text-decoration: line-through; user-select: none; text-align: center; }
     </style>
 </head>
 <body>
@@ -41,44 +43,64 @@
     <div class="header"><h5 id="pageTitle">TaskEarn</h5></div>
 
     <div class="container-fluid">
+        <!-- Pages (Home, Referral, etc.) -->
         <div id="homePage" class="app-section active">
-            <div class="balance-card"><p class="mb-1">Your Balance</p><h3 id="userBalance">$0.0000</h3><small id="userInfoDebug">User: Initializing...</small></div>
+             <div class="balance-card"><p class="mb-1">Your Balance</p><h3 id="userBalance">$0.0000</h3><small id="userInfoDebug">User: Initializing...</small></div>
             <div class="mt-3"><h6>Available Tasks</h6><div id="taskList"><p class="text-muted text-center mt-3">Loading tasks...</p></div></div>
             <div class="official-channels"><h6><i class="fas fa-bullhorn"></i> Official Channels</h6><ul class="list-group list-group-flush"><li class="list-group-item"><a href="https://t.me/global_Fun22" target="_blank"><i class="fab fa-telegram-plane"></i> Global Fun</a></li><li class="list-group-item"><a href="https://t.me/instant_earn_airdrop" target="_blank"><i class="fab fa-telegram-plane"></i> Instant Earn Airdrop</a></li><li class="list-group-item"><a href="https://t.me/myearn_Cash_payment" target="_blank"><i class="fab fa-telegram-plane"></i> MyEarn Cash Payment</a></li></ul></div>
+            
+            <!-- !!! আপনার অনুরোধ অনুযায়ী নতুন কন্টাক্ট সেকশনটি এখানে যোগ করা হয়েছে !!! -->
+            <div class="official-channels mt-3">
+                <h6><i class="fas fa-bullhorn"></i> Post Your Task</h6>
+                <p class="text-center text-muted small mb-2">Want to promote your channel, bot or website? Contact us.</p>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="mailto:rasedulhaque675@gmail.com" target="_blank">
+                            <i class="fas fa-envelope" style="color: #D44638;"></i> Contact via Gmail
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="https://www.facebook.com/Rashuxansi" target="_blank">
+                            <i class="fab fa-facebook" style="color: #1877F2;"></i> Contact on Facebook
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
         </div>
-        <div id="referralPage" class="app-section"><div class="balance-card text-center p-4"><h4><i class="fas fa-users"></i> Invite Friends, Earn More!</h4><p class="mt-2">Share referral link: earn <strong class="text-success">0.01% commission</strong> on referred user's task earnings + <strong class="text-success">$0.005 USDT</strong> per successful referral.</p><div class="mt-3"><label for="referralLink" class="form-label">Your Referral Link:</label><div class="input-group mb-3"><input type="text" class="form-control" id="referralLink" value="Generating..." readonly><button class="btn btn-outline-secondary" type="button" id="copyReferralLinkBtn"><i class="fas fa-copy"></i></button></div><button class="btn btn-primary w-100" id="shareReferralLinkBtn"><i class="fas fa-share-alt"></i> Share Now</button></div><div class="mt-4"><h5>Referral Stats</h5><p>Total Referrals: <span id="totalReferrals">0</span></p><p>My Referral Bonus: <span id="referralEarnings">$0.0000</span> (from direct referrals)</p><p><small>Commission from referred users' tasks will be added by the system.</small></p></div></div></div>
-        
+        <div id="referralPage" class="app-section">
+            <div class="balance-card text-center p-4"><h4><i class="fas fa-users"></i> Invite Friends, Earn More!</h4><p class="mt-2">Share referral link: earn <strong class="text-success">0.01% commission</strong> on referred user's task earnings + <strong class="text-success">$0.005 USDT</strong> per successful referral.</p><div class="mt-3"><label for="referralLink" class="form-label">Your Referral Link:</label><div class="input-group mb-3"><input type="text" class="form-control" id="referralLink" value="Generating..." readonly><button class="btn btn-outline-secondary" type="button" id="copyReferralLinkBtn"><i class="fas fa-copy"></i></button></div><button class="btn btn-primary w-100" id="shareReferralLinkBtn"><i class="fas fa-share-alt"></i> Share Now</button></div><div class="mt-4"><h5>Referral Stats</h5><p>Total Referrals: <span id="totalReferrals">0</span></p><p>My Referral Bonus: <span id="referralEarnings">$0.0000</span> (from direct referrals)</p><p><small>Commission from referred users' tasks will be added by the system.</small></p></div></div>
+        </div>
         <div id="withdrawPage" class="app-section">
             <div class="balance-card p-4"><h4><i class="fas fa-wallet"></i> Withdraw Funds</h4><p class="mt-2">Balance: <strong id="withdrawPageBalance">$0.0000</strong></p><form id="withdrawForm" class="mt-3"><div class="mb-3"><label for="withdrawAmount" class="form-label" id="withdrawAmountLabel">Amount (USDT)</label><input type="number" class="form-control" id="withdrawAmount" placeholder="Min. $..." step="0.01" required></div><div class="mb-3"><label for="paymentMethod" class="form-label">Payment Method</label><select class="form-select" id="paymentMethod" required><option value="">Select Method</option><option value="optimism">Binance (Optimism Wallet - USDT)</option><option value="bkash">bKash (BDT)</option></select></div><div class="mb-3" id="accountInfoField" style="display: none;"><label for="accountDetails" class="form-label" id="accountDetailsLabel">Account Details</label><input type="text" class="form-control" id="accountDetails" required><small id="accountDetailsHint" class="form-text text-muted"></small></div><button type="submit" class="btn btn-success w-100"><i class="fas fa-paper-plane"></i> Request Withdraw</button></form><div class="mt-3 text-center"><small class="text-muted">Withdrawals processed in 24-48 hours.</small></div></div>
         </div>
-
-        <!-- !!! Profile Page HTML আপডেট করা হয়েছে !!! -->
         <div id="profilePage" class="app-section">
              <div class="balance-card p-4 text-center">
                 <h4><i class="fas fa-user-circle"></i> My Profile</h4>
-                
-                <div class="mt-3">
-                    <div class="input-group mb-2">
-                        <span class="input-group-text" style="width: 110px;">First Name</span>
-                        <input type="text" class="form-control" id="profileFirstName" placeholder="Your First Name">
-                    </div>
-                    <div class="input-group mb-2">
-                        <span class="input-group-text" style="width: 110px;">Last Name</span>
-                        <input type="text" class="form-control" id="profileLastName" placeholder="Your Last Name">
-                    </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" style="width: 110px;">Age</span>
-                        <input type="number" class="form-control" id="profileAge" placeholder="e.g., 25" min="13">
-                    </div>
-                    <button class="btn btn-sm btn-success w-100 mb-3" id="saveProfileBtn">Save Profile Info</button>
-                </div>
+                <div class="mt-3"><div class="input-group mb-2"><span class="input-group-text" style="width: 110px;">First Name</span><input type="text" class="form-control" id="profileFirstName" placeholder="Your First Name"></div><div class="input-group mb-2"><span class="input-group-text" style="width: 110px;">Last Name</span><input type="text" class="form-control" id="profileLastName" placeholder="Your Last Name"></div><div class="input-group mb-3"><span class="input-group-text" style="width: 110px;">Age</span><input type="number" class="form-control" id="profileAge" placeholder="e.g., 25" min="13"></div><button class="btn btn-sm btn-success w-100 mb-3" id="saveProfileBtn">Save Profile Info</button></div>
                 <hr>
-                <p class="mt-2 mb-1">User ID: <strong id="profileUserId">N/A</strong></p>
-                <p class="mb-1">Username: <strong id="profileUserName">N/A</strong></p>
-                <p class="mb-1">Joined: <strong id="profileJoinDate">N/A</strong></p>
-                <p class="mb-1">Tasks Completed: <strong id="profileTasksCompleted">0</strong></p>
-                
+                <p class="mt-2 mb-1">User ID: <strong id="profileUserId">N/A</strong></p><p class="mb-1">Username: <strong id="profileUserName">N/A</strong></p><p class="mb-1">Joined: <strong id="profileJoinDate">N/A</strong></p><p class="mb-1">Tasks Completed: <strong id="profileTasksCompleted">0</strong></p>
                 <button class="btn btn-sm btn-danger mt-3" id="resetDataBtn">Reset My Data (Server)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CAPTCHA Modal -->
+    <div class="modal fade" id="captchaModal" tabindex="-1" aria-labelledby="captchaModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background-color: var(--tg-theme-secondary-bg-color, #fff); color: var(--tg-theme-text-color, #000);">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="captchaModalLabel">Task Verification</h5>
+                </div>
+                <div class="modal-body">
+                    <p>To confirm you've done the task, please type the text below:</p>
+                    <div class="captcha-display"><span id="captchaText"></span></div>
+                    <input type="text" class="form-control" id="captchaInput" placeholder="Enter CAPTCHA here" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                    <div id="captchaError" class="text-danger mt-2" style="display: none;">Incorrect. Please try again.</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary w-100" id="submitCaptchaBtn">Confirm & Claim Reward</button>
+                </div>
             </div>
         </div>
     </div>
@@ -90,10 +112,15 @@
         <a class="nav-item" data-page="profilePage"><i class="fas fa-user"></i><span>Profile</span></a>
     </div>
 
+    <!-- Bootstrap JS যোগ করা হয়েছে, যা Modal এর জন্য ضروری -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
         import { getFirestore, collection, doc, getDoc, setDoc, getDocs, query, where, serverTimestamp, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics.js";
 
+        // আপনার দেওয়া নতুন Firebase কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyAxE1P_V4-OhtGZYZzEfBuNMvePRw_Pwkg",
             authDomain: "tasktoearn-57d8d.firebaseapp.com",
@@ -104,223 +131,122 @@
             appId: "1:617693002921:web:a265a73f5044babafcfdb8",
             measurementId: "G-P3ZSKWQRD5"
         };
-
+        
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        console.log("Firebase (Modular SDK) Initialized!");
+        const analytics = getAnalytics(app); // Firebase Analytics চালু করা হলো
+        console.log("Firebase (Modular SDK) Initialized with Analytics!");
 
+        // বাকি JavaScript কোড অপরিবর্তিত আছে
         let currentUser = { id: null, username: 'guest', firstName: '', lastName: '', age: null, balance: 0.00, joinDate: new Date().toISOString().split('T')[0], referrals: 0, referralEarnings: 0, completedTasks: [], referredBy: null };
         let availableTasks = [];
-        const REFERRAL_BONUS_DIRECT = 0.005; // নতুন জয়েন করা ইউজার এবং রেফারার উভয়ের জন্য (ডেমো)
-        const TASK_COMMISSION_RATE_BASE = 0.0001; // 0.01% Base commission from referred user's task earnings
-        // ক্রমবর্ধমান কমিশনের লজিক ক্লাউড ফাংশনে থাকবে
-
-        const MIN_WITHDRAW_OPTIMISM_USD = 0.50;
-        const FEE_OPTIMISM_USD = 0.05;
-        const MIN_WITHDRAW_BKASH_USD = 0.25;
-
+        const REFERRAL_BONUS_DIRECT = 0.005;
+        const MIN_WITHDRAW_OPTIMISM_USD = 0.50; const FEE_OPTIMISM_USD = 0.05; const MIN_WITHDRAW_BKASH_USD = 0.25;
         const ui = {
-            userBalance: document.getElementById('userBalance'),
-            userInfoDebug: document.getElementById('userInfoDebug'),
-            taskList: document.getElementById('taskList'),
-            pageTitle: document.getElementById('pageTitle'),
-            referralLink: document.getElementById('referralLink'),
-            totalReferrals: document.getElementById('totalReferrals'),
-            referralEarnings: document.getElementById('referralEarnings'),
-            withdrawPageBalance: document.getElementById('withdrawPageBalance'),
-            withdrawAmountInput: document.getElementById('withdrawAmount'),
-            withdrawAmountLabel: document.getElementById('withdrawAmountLabel'),
-            paymentMethod: document.getElementById('paymentMethod'),
-            accountInfoField: document.getElementById('accountInfoField'),
-            accountDetailsLabel: document.getElementById('accountDetailsLabel'),
-            accountDetails: document.getElementById('accountDetails'),
-            accountDetailsHint: document.getElementById('accountDetailsHint'),
-            profileUserId: document.getElementById('profileUserId'),
-            profileUserName: document.getElementById('profileUserName'),
-            profileFirstNameInput: document.getElementById('profileFirstName'), // নতুন UI এলিমেন্ট
-            profileLastNameInput: document.getElementById('profileLastName'),   // নতুন UI এলিমেন্ট
-            profileAgeInput: document.getElementById('profileAge'),         // নতুন UI এলিমেন্ট
-            saveProfileBtn: document.getElementById('saveProfileBtn'),       // নতুন UI এলিমেন্ট
-            profileTasksCompleted: document.getElementById('profileTasksCompleted'), // নতুন UI এলিমেন্ট
-            profileJoinDate: document.getElementById('profileJoinDate'),
-            loadingOverlay: document.getElementById('loadingOverlay'),
-            withdrawForm: document.getElementById('withdrawForm'),
-            copyReferralLinkBtn: document.getElementById('copyReferralLinkBtn'),
-            shareReferralLinkBtn: document.getElementById('shareReferralLinkBtn'),
-            resetDataBtn: document.getElementById('resetDataBtn'),
-            bottomNavItems: document.querySelectorAll('.bottom-nav .nav-item')
+            userBalance: document.getElementById('userBalance'), userInfoDebug: document.getElementById('userInfoDebug'), taskList: document.getElementById('taskList'), pageTitle: document.getElementById('pageTitle'), referralLink: document.getElementById('referralLink'), totalReferrals: document.getElementById('totalReferrals'), referralEarnings: document.getElementById('referralEarnings'), withdrawPageBalance: document.getElementById('withdrawPageBalance'), withdrawAmountInput: document.getElementById('withdrawAmount'), withdrawAmountLabel: document.getElementById('withdrawAmountLabel'), paymentMethod: document.getElementById('paymentMethod'), accountInfoField: document.getElementById('accountInfoField'), accountDetailsLabel: document.getElementById('accountDetailsLabel'), accountDetails: document.getElementById('accountDetails'), accountDetailsHint: document.getElementById('accountDetailsHint'), profileUserId: document.getElementById('profileUserId'), profileUserName: document.getElementById('profileUserName'), profileFirstNameInput: document.getElementById('profileFirstName'), profileLastNameInput: document.getElementById('profileLastName'), profileAgeInput: document.getElementById('profileAge'), saveProfileBtn: document.getElementById('saveProfileBtn'), profileTasksCompleted: document.getElementById('profileTasksCompleted'), profileJoinDate: document.getElementById('profileJoinDate'), loadingOverlay: document.getElementById('loadingOverlay'), withdrawForm: document.getElementById('withdrawForm'), copyReferralLinkBtn: document.getElementById('copyReferralLinkBtn'), shareReferralLinkBtn: document.getElementById('shareReferralLinkBtn'), resetDataBtn: document.getElementById('resetDataBtn'), bottomNavItems: document.querySelectorAll('.bottom-nav .nav-item'),
+            captchaModal: null, captchaText: document.getElementById('captchaText'), captchaInput: document.getElementById('captchaInput'), submitCaptchaBtn: document.getElementById('submitCaptchaBtn'), captchaError: document.getElementById('captchaError'),
         };
-
+        let currentCaptcha = '';
+        let currentTaskIdForCaptcha = null;
         function showLoading() { ui.loadingOverlay.style.display = 'flex'; }
         function hideLoading() { ui.loadingOverlay.style.display = 'none'; }
-
-        function navigateTo(pageId, navElement = null) { /* আগের মতোই */ document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active')); document.getElementById(pageId).classList.add('active'); ui.bottomNavItems.forEach(item => item.classList.remove('active')); if (navElement) { navElement.classList.add('active'); } else { const itemToActivate = Array.from(ui.bottomNavItems).find(item => item.dataset.page === pageId); if (itemToActivate) itemToActivate.classList.add('active'); } const titles = {'homePage':'Home','referralPage':'Refer','withdrawPage':'Withdraw','profilePage':'Profile'}; ui.pageTitle.textContent = titles[pageId] || 'TaskEarn'; window.scrollTo(0,0); }
-        
+        function navigateTo(pageId, navElement = null) { document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active')); document.getElementById(pageId).classList.add('active'); ui.bottomNavItems.forEach(item => item.classList.remove('active')); if (navElement) { navElement.classList.add('active'); } else { const itemToActivate = Array.from(ui.bottomNavItems).find(item => item.dataset.page === pageId); if (itemToActivate) itemToActivate.classList.add('active'); } const titles = {'homePage':'Home','referralPage':'Refer','withdrawPage':'Withdraw','profilePage':'Profile'}; ui.pageTitle.textContent = titles[pageId] || 'TaskEarn'; window.scrollTo(0,0); }
         async function initializeAppCore() {
             console.log("initializeAppCore started"); showLoading();
             try {
-                if (window.Telegram && window.Telegram.WebApp) {
-                    const WebApp = window.Telegram.WebApp; WebApp.ready(); WebApp.expand();
-                    if (WebApp.initDataUnsafe && WebApp.initDataUnsafe.user) {
-                        const tgUser = WebApp.initDataUnsafe.user; currentUser.id = tgUser.id.toString(); currentUser.firstName = tgUser.first_name || ""; currentUser.lastName = tgUser.last_name || ""; currentUser.username = tgUser.username || "N/A";
-                    } else { currentUser.id = 'local_' + Date.now(); currentUser.username = 'demouser'; currentUser.firstName = 'Demo'; } // Ensure firstName is set for local
-                    if (WebApp.initDataUnsafe && WebApp.initDataUnsafe.start_param) {
-                        const refId = WebApp.initDataUnsafe.start_param; if (currentUser.id && currentUser.id !== refId && !currentUser.referredBy) { currentUser.referredBy = refId; }
-                    }
-                } else { currentUser.id = 'browser_' + Date.now(); currentUser.username = 'browseruser'; currentUser.firstName = 'Browser';} // Ensure firstName is set for browser
+                if (window.Telegram && window.Telegram.WebApp) { const WebApp = window.Telegram.WebApp; WebApp.ready(); WebApp.expand(); if (WebApp.initDataUnsafe && WebApp.initDataUnsafe.user) { const tgUser = WebApp.initDataUnsafe.user; currentUser.id = tgUser.id.toString(); currentUser.firstName = tgUser.first_name || ""; currentUser.lastName = tgUser.last_name || ""; currentUser.username = tgUser.username || "N/A"; } else { currentUser.id = 'local_' + Date.now(); currentUser.username = 'demouser'; currentUser.firstName = 'Demo'; } if (WebApp.initDataUnsafe && WebApp.initDataUnsafe.start_param) { const refId = WebApp.initDataUnsafe.start_param; if (currentUser.id && currentUser.id !== refId && !currentUser.referredBy) { currentUser.referredBy = refId; } } } else { currentUser.id = 'browser_' + Date.now(); currentUser.username = 'browseruser'; currentUser.firstName = 'Browser';}
                 await loadUserDataFromFirestore(); await loadTasksFromFirestore(); updateUI(); navigateTo('homePage');
-            } catch (error) { console.error("Error during app initialization:", error); if (window.Telegram && window.Telegram.WebApp) { Telegram.WebApp.showAlert("Failed to initialize app."); } else { alert("Failed to initialize app."); }
-            } finally { hideLoading(); }
+            } catch (error) { console.error("Error during app initialization:", error); if (window.Telegram && window.Telegram.WebApp) { Telegram.WebApp.showAlert("Failed to initialize app."); } else { alert("Failed to initialize app."); } } finally { hideLoading(); }
         }
-
-        async function loadUserDataFromFirestore() {
-            if (!currentUser.id) return; const userDocRef = doc(db, "users", currentUser.id);
-            try {
-                const docSnap = await getDoc(userDocRef);
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    // Merge Firestore data, but prioritize TG data for names if freshly available
-                    currentUser.firstName = currentUser.firstName || data.firstName || ""; 
-                    currentUser.lastName = currentUser.lastName || data.lastName || "";
-                    currentUser.username = currentUser.username !== 'guest' && currentUser.username !== 'N/A' ? currentUser.username : (data.username || 'guest');
-                    currentUser.age = data.age || null;
-
-                    currentUser.balance = parseFloat(data.balance) || 0;
-                    currentUser.joinDate = data.joinDate || currentUser.joinDate;
-                    currentUser.referrals = parseInt(data.referrals) || 0;
-                    currentUser.referralEarnings = parseFloat(data.referralEarnings) || 0;
-                    currentUser.completedTasks = Array.isArray(data.completedTasks) ? data.completedTasks : [];
-                    currentUser.referredBy = data.referredBy || currentUser.referredBy;
-                } else {
-                    // New user in Firestore
-                    let isNewUserBonusApplied = false;
-                    if (currentUser.referredBy) { 
-                        currentUser.balance += REFERRAL_BONUS_DIRECT; 
-                        currentUser.referralEarnings += REFERRAL_BONUS_DIRECT; // রেফারার কে বোনাস (ক্লাউড ফাংশনে করা উচিত)
-                        isNewUserBonusApplied = true;
-                        console.log(`Applied $${REFERRAL_BONUS_DIRECT} referral bonus to new user ${currentUser.id}`);
-                        // !!! এখানে ক্লাউড ফাংশন ট্রিগার করে রেফারারকে $0.005 বোনাস এবং তার রেফারেল সংখ্যা বাড়ানোর লজিক থাকবে !!!
-                    }
-                    await saveUserDataToFirestore(); // Firestore এ নতুন ডেটা সেভ করুন
-                    if(isNewUserBonusApplied && window.Telegram && window.Telegram.WebApp) {
-                        Telegram.WebApp.showAlert(`Welcome! You received a $${REFERRAL_BONUS_DIRECT.toFixed(3)} bonus for joining via referral!`);
-                    }
-                }
-            } catch (e) { console.error("Error loading user data: ", e); }
+        async function loadUserDataFromFirestore() { if (!currentUser.id) return; const userDocRef = doc(db, "users", currentUser.id); try { const docSnap = await getDoc(userDocRef); if (docSnap.exists()) { const data = docSnap.data(); currentUser.firstName = currentUser.firstName || data.firstName || ""; currentUser.lastName = currentUser.lastName || data.lastName || ""; currentUser.username = currentUser.username !== 'guest' && currentUser.username !== 'N/A' ? currentUser.username : (data.username || 'guest'); currentUser.age = data.age || null; currentUser.balance = parseFloat(data.balance) || 0; currentUser.joinDate = data.joinDate || currentUser.joinDate; currentUser.referrals = parseInt(data.referrals) || 0; currentUser.referralEarnings = parseFloat(data.referralEarnings) || 0; currentUser.completedTasks = Array.isArray(data.completedTasks) ? data.completedTasks : []; currentUser.referredBy = data.referredBy || currentUser.referredBy; } else { let isNewUserBonusApplied = false; if (currentUser.referredBy) { currentUser.balance += REFERRAL_BONUS_DIRECT; currentUser.referralEarnings += REFERRAL_BONUS_DIRECT; isNewUserBonusApplied = true; console.log(`Applied $${REFERRAL_BONUS_DIRECT} referral bonus to new user ${currentUser.id}`); } await saveUserDataToFirestore(); if(isNewUserBonusApplied && window.Telegram && window.Telegram.WebApp) { Telegram.WebApp.showAlert(`Welcome! You received a $${REFERRAL_BONUS_DIRECT.toFixed(3)} bonus for joining via referral!`); } } } catch (e) { console.error("Error loading user data: ", e); } }
+        async function saveUserDataToFirestore() { if (!currentUser.id) return; const userDocRef = doc(db, "users", currentUser.id); const dataToSave = { id: currentUser.id, username: currentUser.username, firstName: currentUser.firstName, lastName: currentUser.lastName, age: currentUser.age || null, balance: parseFloat(currentUser.balance) || 0, joinDate: currentUser.joinDate, referrals: parseInt(currentUser.referrals) || 0, referralEarnings: parseFloat(currentUser.referralEarnings) || 0, completedTasks: currentUser.completedTasks || [], referredBy: currentUser.referredBy || null, lastSeen: serverTimestamp() }; try { await setDoc(userDocRef, dataToSave, { merge: true }); console.log("User data saved:", dataToSave); } catch (e) { console.error("Error saving user data: ", e); } }
+        async function loadTasksFromFirestore() { console.log("Loading tasks..."); const tasksCollRef = collection(db, "tasks"); const q = query(tasksCollRef, where("isActive", "==", true)); try { const querySnapshot = await getDocs(q); availableTasks = []; querySnapshot.forEach((docSnap) => availableTasks.push({ id: docSnap.id, ...docSnap.data() })); console.log("Tasks loaded:", availableTasks.length); } catch (e) { console.error("Error loading tasks: ", e); } finally { renderTasks(); } }
+        function updateUI() { ui.userBalance.textContent = `$${parseFloat(currentUser.balance).toFixed(4)}`; let userInfo = `ID: ${currentUser.id || 'N/A'}`; if (currentUser.firstName) userInfo = `${currentUser.firstName} ${currentUser.lastName || ''} (@${currentUser.username || 'N/A'}) | ID: ${currentUser.id}`; else if (currentUser.username && currentUser.username !== 'guest' && currentUser.username !== 'N/A') userInfo = `@${currentUser.username} | ID: ${currentUser.id}`; ui.userInfoDebug.textContent = userInfo; ui.referralLink.value = `https://t.me/Task_Toearnn_Bot?start=${currentUser.id}`; ui.totalReferrals.textContent = currentUser.referrals || 0; ui.referralEarnings.textContent = `$${parseFloat(currentUser.referralEarnings || 0).toFixed(4)}`; ui.withdrawPageBalance.textContent = `$${parseFloat(currentUser.balance).toFixed(4)}`; ui.profileUserId.textContent = currentUser.id || "N/A"; ui.profileUserName.textContent = currentUser.username || "N/A"; ui.profileFirstNameInput.value = currentUser.firstName || ""; ui.profileLastNameInput.value = currentUser.lastName || ""; ui.profileAgeInput.value = currentUser.age || ""; ui.profileTasksCompleted.textContent = currentUser.completedTasks.length || 0; ui.profileJoinDate.textContent = currentUser.joinDate ? new Date(currentUser.joinDate).toLocaleDateString() : "N/A"; }
+        function renderTasks() { ui.taskList.innerHTML = ''; if (availableTasks.length === 0) { ui.taskList.innerHTML = '<p class="text-muted text-center mt-3">No tasks available.</p>'; return; } availableTasks.forEach(task => { const isCompleted = currentUser.completedTasks.includes(task.id); const rewardText = task.reward ? `$${parseFloat(task.reward).toFixed(4)}` : 'N/A'; const taskCard = `<div class="task-card"><div class="task-icon" style="color: ${task.platformColor || '#777'};"><i class="${task.icon || 'fas fa-tasks'}"></i></div><div class="task-info"><h6>${task.title || 'Untitled Task'}</h6><p>${task.description || 'No description.'}</p></div><div><div class="task-reward mb-1">${rewardText}</div><button class="btn btn-sm ${isCompleted ? 'btn-secondary' : 'btn-primary'} btn-complete-task" data-taskid="${task.id}" ${isCompleted ? 'disabled' : ''}>${isCompleted ? '<i class="fas fa-check"></i> Done' : 'Do Task'}</button></div></div>`; ui.taskList.insertAdjacentHTML('beforeend', taskCard); }); }
+        function generateCaptcha() {
+            const chars = 'AbcDefGhijKLMnPQRsTUVwXYz0123456789';
+            let captcha = '';
+            for (let i = 0; i < 6; i++) {
+                captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return captcha;
         }
-
-        async function saveUserDataToFirestore() {
-            if (!currentUser.id) return; const userDocRef = doc(db, "users", currentUser.id);
-            const dataToSave = {
-                id: currentUser.id, // টেলিগ্রাম আইডি সেভ করা হচ্ছে
-                username: currentUser.username, firstName: currentUser.firstName, lastName: currentUser.lastName, age: currentUser.age || null,
-                balance: parseFloat(currentUser.balance) || 0, joinDate: currentUser.joinDate,
-                referrals: parseInt(currentUser.referrals) || 0, referralEarnings: parseFloat(currentUser.referralEarnings) || 0,
-                completedTasks: currentUser.completedTasks || [], referredBy: currentUser.referredBy || null,
-                lastSeen: serverTimestamp()
-            };
-            try { await setDoc(userDocRef, dataToSave, { merge: true }); console.log("User data saved:", dataToSave); }
-            catch (e) { console.error("Error saving user data: ", e); }
-        }
-
-        async function loadTasksFromFirestore() { /* আগের মতোই */ console.log("Loading tasks..."); const tasksCollRef = collection(db, "tasks"); const q = query(tasksCollRef, where("isActive", "==", true)); try { const querySnapshot = await getDocs(q); availableTasks = []; querySnapshot.forEach((docSnap) => availableTasks.push({ id: docSnap.id, ...docSnap.data() })); console.log("Tasks loaded:", availableTasks.length); } catch (e) { console.error("Error loading tasks: ", e); } finally { renderTasks(); } }
-        
-        function updateUI() {
-            ui.userBalance.textContent = `$${parseFloat(currentUser.balance).toFixed(4)}`;
-            let userInfo = `ID: ${currentUser.id || 'N/A'}`;
-            if (currentUser.firstName) userInfo = `${currentUser.firstName} ${currentUser.lastName || ''} (@${currentUser.username || 'N/A'}) | ID: ${currentUser.id}`;
-            else if (currentUser.username && currentUser.username !== 'guest' && currentUser.username !== 'N/A') userInfo = `@${currentUser.username} | ID: ${currentUser.id}`;
-            ui.userInfoDebug.textContent = userInfo;
-            ui.referralLink.value = `https://t.me/Task_Toearnn_Bot?start=${currentUser.id}`;
-            ui.totalReferrals.textContent = currentUser.referrals || 0;
-            ui.referralEarnings.textContent = `$${parseFloat(currentUser.referralEarnings || 0).toFixed(4)}`;
-            ui.withdrawPageBalance.textContent = `$${parseFloat(currentUser.balance).toFixed(4)}`;
+        function showCaptchaVerification(taskId) {
+            currentTaskIdForCaptcha = taskId;
+            currentCaptcha = generateCaptcha();
             
-            // প্রোফাইল পেজের UI আপডেট
-            ui.profileUserId.textContent = currentUser.id || "N/A";
-            ui.profileUserName.textContent = currentUser.username || "N/A";
-            ui.profileFirstNameInput.value = currentUser.firstName || "";
-            ui.profileLastNameInput.value = currentUser.lastName || "";
-            ui.profileAgeInput.value = currentUser.age || "";
-            ui.profileTasksCompleted.textContent = currentUser.completedTasks.length || 0;
-            ui.profileJoinDate.textContent = currentUser.joinDate ? new Date(currentUser.joinDate).toLocaleDateString() : "N/A";
-        }
+            ui.captchaText.textContent = currentCaptcha;
+            ui.captchaInput.value = '';
+            ui.captchaError.style.display = 'none';
 
-        function renderTasks() { /* আগের মতোই */ ui.taskList.innerHTML = ''; if (availableTasks.length === 0) { ui.taskList.innerHTML = '<p class="text-muted text-center mt-3">No tasks available.</p>'; return; } availableTasks.forEach(task => { const isCompleted = currentUser.completedTasks.includes(task.id); const rewardText = task.reward ? `$${parseFloat(task.reward).toFixed(4)}` : 'N/A'; const taskCard = `<div class="task-card"><div class="task-icon" style="color: ${task.platformColor || '#777'};"><i class="${task.icon || 'fas fa-tasks'}"></i></div><div class="task-info"><h6>${task.title || 'Untitled Task'}</h6><p>${task.description || 'No description.'}</p></div><div><div class="task-reward mb-1">${rewardText}</div><button class="btn btn-sm ${isCompleted ? 'btn-secondary' : 'btn-primary'} btn-complete-task" data-taskid="${task.id}" ${isCompleted ? 'disabled' : ''}>${isCompleted ? '<i class="fas fa-check"></i> Done' : 'Do Task'}</button></div></div>`; ui.taskList.insertAdjacentHTML('beforeend', taskCard); }); }
-        function confirmCompleteTask(taskId) { /* আগের মতোই */ const task = availableTasks.find(t => t.id === taskId); if (!task) return; const message = `Perform task: "${task.title || 'this task'}"?`; if (window.Telegram && window.Telegram.WebApp) { Telegram.WebApp.showConfirm(message, (c) => { if(c) executeTask(taskId); }); } else { if (confirm(message)) executeTask(taskId); } }
-        
-        async function executeTask(taskId) {
+            if (!ui.captchaModal) {
+                ui.captchaModal = new bootstrap.Modal(document.getElementById('captchaModal'));
+            }
+            ui.captchaModal.show();
+        }
+        function confirmCompleteTask(taskId) {
+            const task = availableTasks.find(t => t.id === taskId);
+            if (!task) return;
+            const message = `You are about to perform the task: "${task.title || 'this task'}".\n\nA new window will open. After you finish, return here to verify and claim your reward.`;
+            const callback = (confirmed) => {
+                if (confirmed) {
+                    if (task.link) {
+                        if (window.Telegram && window.Telegram.WebApp.openLink) {
+                            Telegram.WebApp.openLink(task.link);
+                        } else {
+                            window.open(task.link, '_blank');
+                        }
+                    }
+                    setTimeout(() => {
+                        showCaptchaVerification(taskId);
+                    }, 1000); 
+                }
+            };
+            if (window.Telegram && window.Telegram.WebApp) {
+                Telegram.WebApp.showConfirm(message, callback);
+            } else {
+                if (confirm(message)) {
+                    callback(true);
+                }
+            }
+        }
+        async function executeTaskCompletion(taskId) {
             showLoading();
             const task = availableTasks.find(t => t.id === taskId);
             if (!task || currentUser.completedTasks.includes(taskId) || !task.reward) { hideLoading(); return; }
             if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-            if (task.link) { if (window.Telegram && window.Telegram.WebApp.openLink) Telegram.WebApp.openLink(task.link); else window.open(task.link, '_blank'); }
-            
-            setTimeout(async () => {
-                currentUser.balance = (parseFloat(currentUser.balance) || 0) + (parseFloat(task.reward) || 0);
-                currentUser.completedTasks.push(taskId);
-
-                // !!! এখানে টাস্ক কমপ্লিট কমিশন (0.01%) এবং ক্রমবর্ধমান কমিশন রেফারারকে দেওয়ার লজিক ক্লাউড ফাংশনে থাকবে !!!
-                // ক্লায়েন্ট সাইডে সিমুলেশন করা নিরাপদ নয়।
-                // উদাহরণস্বরূপ, একটি Cloud Function ট্রিগার হতে পারে যখন completedTasks আপডেট হয়।
-                // সেই ফাংশন currentUser.referredBy আইডি দিয়ে রেফারারকে খুঁজে বের করবে
-                // এবং তার অ্যাকাউন্টে (task.reward * TASK_COMMISSION_RATE_BASE) যোগ করবে।
-                // ক্রমবর্ধমান কমিশনের লজিকও সেখানে থাকবে।
-
-                await saveUserDataToFirestore();
-                updateUI(); renderTasks(); hideLoading();
-                const rewardAmount = parseFloat(task.reward).toFixed(4);
-                const successMessage = `Task "${task.title || 'Task'}" done! +$${rewardAmount}`;
-                if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showAlert(successMessage); else alert(successMessage);
-            }, 2500);
+            currentUser.balance = (parseFloat(currentUser.balance) || 0) + (parseFloat(task.reward) || 0);
+            currentUser.completedTasks.push(taskId);
+            await saveUserDataToFirestore();
+            updateUI(); renderTasks(); hideLoading();
+            const rewardAmount = parseFloat(task.reward).toFixed(4);
+            const successMessage = `Task verified & completed! +$${rewardAmount}`;
+            if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showAlert(successMessage); else alert(successMessage);
         }
-        
-        function copyReferralLink() { /* আগের মতোই */ navigator.clipboard.writeText(ui.referralLink.value).then(() => { const msg = 'Referral link copied!'; if (window.Telegram && window.Telegram.WebApp) { Telegram.WebApp.HapticFeedback.impactOccurred('light'); Telegram.WebApp.showAlert(msg); } else { alert(msg); } }).catch(e => { console.error('Copy failed:', e); alert('Failed to copy.'); }); }
-        function shareReferralLink() { /* আগের মতোই */ const link = ui.referralLink.value; const text = `Join TaskEarn & earn rewards! My link: ${link}`; if (window.Telegram && window.Telegram.WebApp.openTelegramLink) { Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`); } else { alert("Share this link: " + link); } }
-
-        ui.paymentMethod.addEventListener('change', function() { /* আগের মতোই, কোনো পরিবর্তন নেই (আপনার আগের কোড অনুযায়ী) */ const method = this.value; ui.accountInfoField.style.display = 'none'; ui.accountDetails.value = ''; ui.accountDetails.placeholder = ''; ui.accountDetailsHint.textContent = ''; ui.withdrawAmountLabel.textContent = 'Amount (USDT)'; ui.withdrawAmountInput.placeholder = `Min. $...`; if (method === 'optimism') { ui.accountInfoField.style.display = 'block'; ui.accountDetailsLabel.textContent = 'Binance Optimism (ERC20) Wallet Address (USDT)'; ui.accountDetails.placeholder = 'e.g., 0x...'; ui.accountDetailsHint.textContent = `Min withdraw: $${MIN_WITHDRAW_OPTIMISM_USD.toFixed(2)}. Fee: $${FEE_OPTIMISM_USD.toFixed(2)}.`; ui.withdrawAmountInput.placeholder = `Min. $${MIN_WITHDRAW_OPTIMISM_USD.toFixed(2)}`; } else if (method === 'bkash') { ui.accountInfoField.style.display = 'block'; ui.accountDetailsLabel.textContent = 'bKash Number (Personal)'; ui.accountDetails.placeholder = 'e.g., 01xxxxxxxxx'; ui.accountDetailsHint.textContent = `Min withdraw: $${MIN_WITHDRAW_BKASH_USD.toFixed(2)}.`; ui.withdrawAmountInput.placeholder = `Min. $${MIN_WITHDRAW_BKASH_USD.toFixed(2)}`; } });
-        ui.withdrawForm.addEventListener('submit', async function(e) { /* আগের মতোই, কোনো পরিবর্তন নেই (আপনার আগের কোড অনুযায়ী) */ e.preventDefault(); showLoading(); const amountToReceive = parseFloat(ui.withdrawAmountInput.value); const method = ui.paymentMethod.value; const details = ui.accountDetails.value; let error = null; let amountToDeduct = amountToReceive; let actualReceivedByAdmin = amountToReceive; if (isNaN(amountToReceive) || amountToReceive <= 0) { error = 'Invalid amount.'; } else if (!method) { error = 'Select method.'; } else if (ui.accountInfoField.style.display !== 'none' && !details) { error = 'Provide account details.'; } else { if (method === 'optimism') { if (amountToReceive < MIN_WITHDRAW_OPTIMISM_USD) { error = `Min for Optimism is $${MIN_WITHDRAW_OPTIMISM_USD.toFixed(2)}.`; } else { amountToDeduct = amountToReceive + FEE_OPTIMISM_USD; actualReceivedByAdmin = amountToReceive; } } else if (method === 'bkash') { if (amountToReceive < MIN_WITHDRAW_BKASH_USD) { error = `Min for bKash is $${MIN_WITHDRAW_BKASH_USD.toFixed(2)}.`; } } } if (!error && amountToDeduct > currentUser.balance) { error = `Insufficient balance. Need $${amountToDeduct.toFixed(2)}.`; } if (error) { hideLoading(); if (window.Telegram&&window.Telegram.WebApp)Telegram.WebApp.showAlert(error); else alert(error); return; } try { const withdrawCollRef = collection(db, "withdrawalRequests"); await addDoc(withdrawCollRef, { userId: currentUser.id, username: currentUser.username, requestedAmount: amountToReceive, fee: (method === 'optimism' ? FEE_OPTIMISM_USD : 0), totalDeductedFromUser: amountToDeduct, amountToPayToUser: actualReceivedByAdmin, method: method, accountDetails: details, status: 'pending', requestDate: serverTimestamp() }); currentUser.balance -= amountToDeduct; await saveUserDataToFirestore(); updateUI(); const successMsg = `Withdraw request for $${amountToReceive.toFixed(2)} submitted. $${amountToDeduct.toFixed(2)} deducted.`; if(window.Telegram&&window.Telegram.WebApp)Telegram.WebApp.showAlert(successMsg);else alert(successMsg); this.reset(); ui.accountInfoField.style.display='none'; ui.withdrawAmountInput.placeholder = 'Min. $...'; ui.withdrawAmountLabel.textContent = 'Amount (USDT)'; } catch (err) { console.error("Error submitting withdrawal:", err); if(window.Telegram&&window.Telegram.WebApp)Telegram.WebApp.showAlert("Withdrawal failed.");else alert("Withdrawal failed."); } finally { hideLoading(); } });
-        
-        // !!! Save Profile Button Event Listener !!!
-        ui.saveProfileBtn.addEventListener('click', async function() {
-            showLoading();
-            const newFirstName = ui.profileFirstNameInput.value.trim();
-            const newLastName = ui.profileLastNameInput.value.trim();
-            const newAge = ui.profileAgeInput.value ? parseInt(ui.profileAgeInput.value) : null;
-
-            if (!newFirstName) { // শুধু ফার্স্ট নেম বাধ্যতামূলক করা হলো (উদাহরণ)
-                hideLoading();
-                if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showAlert("First name cannot be empty.");
-                else alert("First name cannot be empty.");
-                return;
-            }
-
-            currentUser.firstName = newFirstName;
-            currentUser.lastName = newLastName;
-            currentUser.age = newAge;
-
-            try {
-                await saveUserDataToFirestore();
-                updateUI(); // UI তে নতুন তথ্য দেখান
-                if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showAlert("Profile information saved successfully!");
-                else alert("Profile information saved!");
-            } catch (error) {
-                console.error("Error saving profile:", error);
-                if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showAlert("Failed to save profile.");
-                else alert("Failed to save profile.");
-            } finally {
-                hideLoading();
+        function copyReferralLink() { navigator.clipboard.writeText(ui.referralLink.value).then(() => { const msg = 'Referral link copied!'; if (window.Telegram && window.Telegram.WebApp) { Telegram.WebApp.HapticFeedback.impactOccurred('light'); Telegram.WebApp.showAlert(msg); } else { alert(msg); } }).catch(e => { console.error('Copy failed:', e); alert('Failed to copy.'); }); }
+        function shareReferralLink() { const link = ui.referralLink.value; const text = `Join TaskEarn & earn rewards! My link: ${link}`; if (window.Telegram && window.Telegram.WebApp.openTelegramLink) { Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`); } else { alert("Share this link: " + link); } }
+        ui.paymentMethod.addEventListener('change', function() { const method = this.value; ui.accountInfoField.style.display = 'none'; ui.accountDetails.value = ''; ui.accountDetails.placeholder = ''; ui.accountDetailsHint.textContent = ''; ui.withdrawAmountLabel.textContent = 'Amount (USDT)'; ui.withdrawAmountInput.placeholder = `Min. $...`; if (method === 'optimism') { ui.accountInfoField.style.display = 'block'; ui.accountDetailsLabel.textContent = 'Binance Optimism (ERC20) Wallet Address (USDT)'; ui.accountDetails.placeholder = 'e.g., 0x...'; ui.accountDetailsHint.textContent = `Min withdraw: $${MIN_WITHDRAW_OPTIMISM_USD.toFixed(2)}. Fee: $${FEE_OPTIMISM_USD.toFixed(2)}.`; ui.withdrawAmountInput.placeholder = `Min. $${MIN_WITHDRAW_OPTIMISM_USD.toFixed(2)}`; } else if (method === 'bkash') { ui.accountInfoField.style.display = 'block'; ui.accountDetailsLabel.textContent = 'bKash Number (Personal)'; ui.accountDetails.placeholder = 'e.g., 01xxxxxxxxx'; ui.accountDetailsHint.textContent = `Min withdraw: $${MIN_WITHDRAW_BKASH_USD.toFixed(2)}.`; ui.withdrawAmountInput.placeholder = `Min. $${MIN_WITHDRAW_BKASH_USD.toFixed(2)}`; } });
+        ui.withdrawForm.addEventListener('submit', async function(e) { e.preventDefault(); showLoading(); const amountToReceive = parseFloat(ui.withdrawAmountInput.value); const method = ui.paymentMethod.value; const details = ui.accountDetails.value; let error = null; let amountToDeduct = amountToReceive; let actualReceivedByAdmin = amountToReceive; if (isNaN(amountToReceive) || amountToReceive <= 0) { error = 'Invalid amount.'; } else if (!method) { error = 'Select method.'; } else if (ui.accountInfoField.style.display !== 'none' && !details) { error = 'Provide account details.'; } else { if (method === 'optimism') { if (amountToReceive < MIN_WITHDRAW_OPTIMISM_USD) { error = `Min for Optimism is $${MIN_WITHDRAW_OPTIMISM_USD.toFixed(2)}.`; } else { amountToDeduct = amountToReceive + FEE_OPTIMISM_USD; actualReceivedByAdmin = amountToReceive; } } else if (method === 'bkash') { if (amountToReceive < MIN_WITHDRAW_BKASH_USD) { error = `Min for bKash is $${MIN_WITHDRAW_BKASH_USD.toFixed(2)}.`; } } } if (!error && amountToDeduct > currentUser.balance) { error = `Insufficient balance. Need $${amountToDeduct.toFixed(2)}.`; } if (error) { hideLoading(); if (window.Telegram&&window.Telegram.WebApp)Telegram.WebApp.showAlert(error); else alert(error); return; } try { const withdrawCollRef = collection(db, "withdrawalRequests"); await addDoc(withdrawCollRef, { userId: currentUser.id, username: currentUser.username, requestedAmount: amountToReceive, fee: (method === 'optimism' ? FEE_OPTIMISM_USD : 0), totalDeductedFromUser: amountToDeduct, amountToPayToUser: actualReceivedByAdmin, method: method, accountDetails: details, status: 'pending', requestDate: serverTimestamp() }); currentUser.balance -= amountToDeduct; await saveUserDataToFirestore(); updateUI(); const successMsg = `Withdraw request for $${amountToReceive.toFixed(2)} submitted. $${amountToDeduct.toFixed(2)} deducted.`; if(window.Telegram&&window.Telegram.WebApp)Telegram.WebApp.showAlert(successMsg);else alert(successMsg); this.reset(); ui.accountInfoField.style.display='none'; ui.withdrawAmountInput.placeholder = 'Min. $...'; ui.withdrawAmountLabel.textContent = 'Amount (USDT)'; } catch (err) { console.error("Error submitting withdrawal:", err); if(window.Telegram&&window.Telegram.WebApp)Telegram.WebApp.showAlert("Withdrawal failed.");else alert("Withdrawal failed."); } finally { hideLoading(); } });
+        ui.saveProfileBtn.addEventListener('click', async function() { showLoading(); const newFirstName = ui.profileFirstNameInput.value.trim(); const newLastName = ui.profileLastNameInput.value.trim(); const newAge = ui.profileAgeInput.value ? parseInt(ui.profileAgeInput.value) : null; if (!newFirstName) { hideLoading(); if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showAlert("First name cannot be empty."); else alert("First name cannot be empty."); return; } currentUser.firstName = newFirstName; currentUser.lastName = newLastName; currentUser.age = newAge; try { await saveUserDataToFirestore(); updateUI(); if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showAlert("Profile information saved successfully!"); else alert("Profile information saved!"); } catch (error) { console.error("Error saving profile:", error); if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.showAlert("Failed to save profile."); else alert("Failed to save profile."); } finally { hideLoading(); } });
+        async function confirmResetData() { const msg="Reset ALL data from server? This cannot be undone!"; const callback = async (confirmed) => { if(confirmed){if(currentUser.id){showLoading();try{const userDocRef=doc(db,"users",currentUser.id);await deleteDoc(userDocRef);if(window.Telegram&&window.Telegram.WebApp)Telegram.WebApp.showAlert("Data Reset from Server.");else alert("Data Reset.");currentUser={id:null,username:'guest',firstName:'',lastName:'',age:null,balance:0.00,joinDate:new Date().toISOString().split('T')[0],referrals:0,referralEarnings:0,completedTasks:[],referredBy:null};await initializeAppCore();}catch(e){console.error("Reset failed:",e);if(window.Telegram&&window.Telegram.WebApp)Telegram.WebApp.showAlert("Reset Failed.");else alert("Reset Failed.");}finally{hideLoading();}}else{alert("No user to reset.");}} }; if(window.Telegram&&window.Telegram.WebApp)Telegram.WebApp.showConfirm(msg,callback);else if(confirm(msg))callback(true); }
+        ui.submitCaptchaBtn.addEventListener('click', async function() {
+            const userInput = ui.captchaInput.value.trim();
+            if (userInput.toLowerCase() === currentCaptcha.toLowerCase()) {
+                ui.captchaModal.hide();
+                await executeTaskCompletion(currentTaskIdForCaptcha);
+            } else {
+                ui.captchaError.style.display = 'block';
+                if (window.Telegram && window.Telegram.WebApp) Telegram.WebApp.HapticFeedback.notificationOccurred('error');
+                currentCaptcha = generateCaptcha();
+                ui.captchaText.textContent = currentCaptcha;
+                ui.captchaInput.value = '';
             }
         });
-
-        async function confirmResetData() { /* আগের মতোই */ const msg="Reset ALL data from server? This cannot be undone!"; const callback = async (confirmed) => { if(confirmed){if(currentUser.id){showLoading();try{const userDocRef=doc(db,"users",currentUser.id);await deleteDoc(userDocRef);if(window.Telegram&&window.Telegram.WebApp)Telegram.WebApp.showAlert("Data Reset from Server.");else alert("Data Reset.");currentUser={id:null,username:'guest',firstName:'',lastName:'',age:null,balance:0.00,joinDate:new Date().toISOString().split('T')[0],referrals:0,referralEarnings:0,completedTasks:[],referredBy:null};await initializeAppCore();}catch(e){console.error("Reset failed:",e);if(window.Telegram&&window.Telegram.WebApp)Telegram.WebApp.showAlert("Reset Failed.");else alert("Reset Failed.");}finally{hideLoading();}}else{alert("No user to reset.");}} }; if(window.Telegram&&window.Telegram.WebApp)Telegram.WebApp.showConfirm(msg,callback);else if(confirm(msg))callback(true); }
-        
         document.addEventListener('click', function(event) { if (event.target.matches('.btn-complete-task')) { confirmCompleteTask(event.target.dataset.taskid); } });
         ui.copyReferralLinkBtn.addEventListener('click', copyReferralLink);
         ui.shareReferralLinkBtn.addEventListener('click', shareReferralLink);
         ui.resetDataBtn.addEventListener('click', confirmResetData);
         ui.bottomNavItems.forEach(item => { item.addEventListener('click', function() { navigateTo(this.dataset.page, this); }); });
-        
         document.addEventListener('DOMContentLoaded', initializeAppCore);
     </script>
 </body>
